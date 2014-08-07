@@ -100,6 +100,7 @@ require "poseidon/fetched_message"
 require "poseidon/partition_consumer"
 
 # Poseidon!
+require "cluster"
 require "poseidon/message"
 require "poseidon/message_set"
 require "poseidon/topic_metadata"
