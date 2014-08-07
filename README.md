@@ -46,7 +46,45 @@ loop do
   end
 end
 ```
+### Add cluster extension
+NOte: first install zk, install method is :gem install zk
+Poseidon Cluster is a cluster extension the excellent Poseidon Ruby client for Kafka 0.8+. It implements the distribution concept of self-rebalancing Consumer Groups and supports the consumption of a single topic from multiple instances.
 
+Consumer group instances share a common group name, and each message published to a topic is delivered to one instance within each subscribing consumer group. Consumer instances can be in separate processes or on separate machines.
+
+Launch a consumer group:
+
+```
+require 'poseidon_cluster'
+
+consumer = Poseidon::ConsumerGroup.new(
+            "my-group",                               # Group name
+            ["kafka1.host:9092", "kafka2.host:9092"], # Kafka brokers
+            ["kafka1.host:2181", "kafka2.host:2181"], # Zookeepers hosts
+            "my-topic")                               # Topic name
+
+consumer.partitions # => [0, 1, 2, 3] - all partitions of 'my-topic'
+consumer.claimed    # => [0, 1] - partitions this instance has claimed
+consumer.fetch do |partition, bulk|
+  bulk.each do |m|
+    puts "Fetched '#{m.value}' at #{m.offset} from #{partition}"
+  end
+end
+
+```
+Get the offset for a partition:
+```
+consumer.offset(0) # => 320 - current offset from partition 0
+```
+
+Initiate a fetch-loop, consume indefinitely:
+```
+consumer.fetch_loop do |partition, bulk|
+  bulk.each do |m|
+    puts "Fetched '#{m.value}' at #{m.offset} from #{partition}"
+  end
+end
+```
 More detailed [Poseidon::PartitionConsumer](http://rubydoc.info/github/bpot/poseidon/Poseidon/PartitionConsumer) documentation.
 
 ## Semantic Versioning
