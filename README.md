@@ -48,6 +48,7 @@ end
 ```
 ### Add cluster extension
 NOte: first install zk, install method is :gem install zk
+
 Poseidon Cluster is a cluster extension the excellent Poseidon Ruby client for Kafka 0.8+. It implements the distribution concept of self-rebalancing Consumer Groups and supports the consumption of a single topic from multiple instances.
 
 Consumer group instances share a common group name, and each message published to a topic is delivered to one instance within each subscribing consumer group. Consumer instances can be in separate processes or on separate machines.
